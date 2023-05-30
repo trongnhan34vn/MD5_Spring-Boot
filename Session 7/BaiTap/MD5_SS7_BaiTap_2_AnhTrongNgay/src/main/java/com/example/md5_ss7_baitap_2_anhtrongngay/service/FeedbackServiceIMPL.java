@@ -14,9 +14,9 @@ public class FeedbackServiceIMPL implements IFeedbackService{
     @Autowired
     private IFeedbackRepository feedbackRepository;
     @Override
-    public Iterable<Feedback> findFeedbackByDate(Pageable pageable) {
+    public Iterable<Feedback> findFeedbackByDate() {
         LocalDate currentDate = LocalDate.now();
-        return feedbackRepository.findFeedbackByDate(currentDate.toString(), pageable);
+        return feedbackRepository.findFeedbackByDate(currentDate);
     }
 
     @Override
@@ -32,6 +32,12 @@ public class FeedbackServiceIMPL implements IFeedbackService{
     @Override
     public Optional<Feedback> findById(Long id) {
         return feedbackRepository.findById(id);
+    }
+
+    @Override
+    public Page<Feedback> findFeedbackByDate(Pageable pageable) {
+        LocalDate currentDate = LocalDate.now();
+        return feedbackRepository.findFeedbackByDate(currentDate, pageable);
     }
 
 }

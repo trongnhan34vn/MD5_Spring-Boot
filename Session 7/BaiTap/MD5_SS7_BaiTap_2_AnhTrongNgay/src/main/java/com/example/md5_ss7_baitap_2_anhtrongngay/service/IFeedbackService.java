@@ -7,9 +7,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface IFeedbackService {
-    Iterable<Feedback> findFeedbackByDate(Pageable pageable);
+    Iterable<Feedback> findFeedbackByDate();
     void save(Feedback feedback);
     void remove(Long id);
     Optional<Feedback> findById(Long id);
+
+    Page<Feedback> findFeedbackByDate(Pageable pageable);
 
 }
