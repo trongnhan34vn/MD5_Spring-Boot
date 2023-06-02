@@ -19,7 +19,6 @@ public class BlogController {
     private IBlogService blogService;
     @GetMapping
     public ResponseEntity<Iterable<Blog>> getAll() {
-        System.out.println(blogService.findAll());
         List<Blog> blogs = (List<Blog>) blogService.findAll();
         if (blogs.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -39,5 +38,15 @@ public class BlogController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(blogOptional.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{search}")
+    public ResponseEntity<Iterable<Blog>> findBlogsByTitle(@PathVariable ("search") String search) {
+        System.out.println("search ------> " + search);
+        List<Blog> blogs = (List<Blog>) blogService.searchByTitle(search);
+        if (blogs.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(blogs,HttpStatus.OK);
     }
 }

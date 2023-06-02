@@ -30,4 +30,9 @@ public class BlogServiceIMPL implements IBlogService{
     public void remove(Long id) {
         blogRepository.deleteById(id);
     }
+
+    @Override
+    public Iterable<Blog> searchByTitle(String search) {
+        return blogRepository.findBlogsByTitle(search);
+    }
 }

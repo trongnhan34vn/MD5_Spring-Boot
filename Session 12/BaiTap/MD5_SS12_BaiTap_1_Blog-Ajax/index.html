@@ -38,6 +38,7 @@
     </div>
     <div class="list-blog">
         <h1>Blogs</h1>
+        <input type="text" oninput="findBlogsByName()" id="search">
         <table border="1" id="blog-table">
             <tr>
                 <td>Category: </td>
@@ -59,17 +60,33 @@
             getAllCatalogs();
         })
 
-        function getAllBlogs() {
-            $.ajax({
-                url: "http://localhost:8080/api/blog",
-                method: "GET",
-                dataType: "json",
-                success: function (data) {
-                    var blogTable = $('#blog-table');
-                    blogTable.empty();
-                    $(data).each(function (index, element) {
-                        blogTable.append(`
-        <tr>
+        // $("#test").on('input', ()=> {
+        //     alert("a");
+        // })
+
+        var searchResults;
+
+        function findBlogsByName() {
+            var search = $('#search').val();
+            if (search.trim() !== "") {
+                $.ajax({
+                    url: `http://localhost:8080/api/blog/search/${search}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var blogTable = $('#blog-table');
+                        blogTable.empty();
+                        show(data, blogTable);
+                    }
+                })
+            } else {
+                getAllBlogs()
+            }
+        }
+
+        function show(data, table) {
+            $(data).each(function (index, element) {
+                table.append(`<tr>
             <td># ${index + 1}<td>
         </tr>
         <tr>
@@ -84,7 +101,19 @@
             <td>Content: </td>
             <td>${element.content}</td>
         </tr>`)
-                    })
+            })
+        }
+
+        function getAllBlogs() {
+            $.ajax({
+                url: "http://localhost:8080/api/blog",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var blogTable = $('#blog-table');
+                    blogTable.empty();
+                    show(data, blogTable);
+                    console.log("abc");
                 }
             })
         }
@@ -110,7 +139,7 @@
         function createBlog() {
             var blog = {};
             var id = + $('#category').val();
-            var selectCat= {};
+            var selectCat = {};
             categories.forEach(category => {
                 if (category.categoryId === id) {
                     selectCat = category;
