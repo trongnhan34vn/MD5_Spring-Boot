@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
+    @Bean
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
@@ -73,17 +72,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http = http.cors().and().csrf().disable();
 
         // Set session management to stateless
-//        http = http
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and();
+        http = http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and();
         // Set permissions on endpoints
         http.authorizeRequests()
                 // Our public endpoints
                 .antMatchers("/api/auth/**").permitAll()
                 // Our private endpoints
-                .antMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/").hasAuthority("USER")
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
 
                 .anyRequest().authenticated();
         http.addFilterBefore(
